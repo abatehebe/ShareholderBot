@@ -54,7 +54,7 @@ class MyClient(discord.Client):
         if now.time() > time(hour=hour):
             changetime += timedelta(days=1)
 
-        return (now-changetime).seconds
+        return (changetime-now).seconds
 
     def _get_nearest_hour(self, now: datetime, hours: Iterable[int]) -> int:
         if now.time() > time(hour=max(hours)):
