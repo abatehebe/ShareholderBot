@@ -23,7 +23,7 @@ class MyClient(discord.Client):
     timer: threading.Timer = None
 
     async def on_ready(self):
-        self._start_timer()
+        self.change_shareholders(866927450872479755, 1002867967056412703)
 
     def _start_timer(self):
         settings = ''.join(open('settings.json', 'r').readlines())
