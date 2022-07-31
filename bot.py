@@ -30,6 +30,7 @@ class MyClient(discord.Client):
         settings = json.loads(settings)
 
         seconds = self._get_seconds_to_changetime(settings.pop('changehours'))
+        print(seconds)
         
         if self.timer:
             self.timer.cancel()
@@ -40,6 +41,7 @@ class MyClient(discord.Client):
     def _get_seconds_to_changetime(self, hours: Iterable[int]) -> int:
         now = datetime.now(offset)
         hour = self._get_nearest_hour(now, hours)
+        print(hour)
 
         changetime = datetime(
                 year=now.year,
@@ -67,6 +69,8 @@ class MyClient(discord.Client):
         channel = guild.get_channel(channel_id)
 
         self.loop.create_task(self._change_shareholders(channel))
+        
+        self._start_timer()
 
     async def _change_shareholders(self, channel: discord.TextChannel):
         shareholders = await self._get_shareholders(channel)
