@@ -80,13 +80,11 @@ class MyClient(discord.Client):
             if choice is Actions.NOTHING:
                 total_messages.append(f'{shareholder} по прежнему {price}')
             else:
-                procent = random.randint(1, 50) * 0.01
-
                 if choice is Actions.DOWNGRADE:
-                    procent = 1 - procent
+                    procent = 1 - random.randint(1, 50) * 0.01
                     action = 'понизились'
                 else:
-                    procent = 1 + procent
+                    procent = 1 + random.randint(1, 100) * 0.01
                     action = 'повысились'
 
                 price = int(price * procent)
