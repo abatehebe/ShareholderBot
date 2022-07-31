@@ -1,7 +1,7 @@
 import os
 import json
 import re
-from typing import Any, Iterable
+from typing import Iterable
 from enum import Enum
 from datetime import datetime, time, timezone, timedelta
 import asyncio
@@ -75,7 +75,6 @@ class MyClient(discord.Client):
         for shareholder in shareholders:
             info = (await self.get(channel, f'*item-info {shareholder}')).embeds[0]
             price = await self._get_price_shareholder(info)
-            procent = random.randint(1, 50) * 0.01
 
             choice = random.choice(list(Actions))
             if choice is Actions.NOTHING:
