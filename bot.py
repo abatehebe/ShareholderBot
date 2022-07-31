@@ -62,6 +62,7 @@ class MyClient(discord.Client):
         else:
             for hour in hours:
                 if now.time() < time(hour=hour):
+                    print(now.time())
                     return hour
         
     def change_shareholders(self, server_id: int, channel_id: int):
