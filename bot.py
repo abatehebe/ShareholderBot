@@ -35,7 +35,7 @@ class MyClient(discord.Client):
         if self.timer:
             self.timer.cancel()
         
-        self.timer = threading.Timer(seconds, self.change_shareholders, *settings.values())
+        self.timer = threading.Timer(seconds, self.change_shareholders, settings.values())
         self.timer.start()
     
     def _get_seconds_to_changetime(self, hours: Iterable[int]) -> int:
