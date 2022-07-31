@@ -116,7 +116,7 @@ class MyClient(discord.Client):
 
     async def get(self, channel: discord.TextChannel, content: str) -> discord.Message:
         await channel.send(content)
-        await asyncio.sleep(1)
+        await asyncio.sleep(2)
         return channel.last_message
 
 
