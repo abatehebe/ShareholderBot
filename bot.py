@@ -64,6 +64,7 @@ class MyClient(discord.Client):
                 if now.time() < time(hour=hour):
                     print(now.time())
                     return hour
+        raise ValueError('hours must not be empty')
         
     def change_shareholders(self, server_id: int, channel_id: int):
         guild = self.get_guild(server_id)
@@ -99,24 +100,31 @@ class MyClient(discord.Client):
         
         await channel.send('ИТОГО: '+', '.join(total_messages))
 
+    shareholders_regex = re.compile(r'\d - (Акции .+)')
     async def _get_shareholders(self, channel: discord.TextChannel) -> list[str]:
+        cls = self.__class__
         message = await self.get(channel, '*item-info Акции')
 
         shareholders = message.embeds[0].description
-        shareholders_regex = re.compile(r'\d - (Акции .+)')
 
         return [shareholder.group(1) for shareholder in 
-                shareholders_regex.finditer(shareholders)]
+                cls.shareholders_regex.finditer(shareholders)]
 
+    coin_regex = re.compile(r'<.+>')
     async def _get_price_shareholder(self, info: Embed) -> int:
+        cls = self.__class__
+
         for field in info.fields:
             if field.name == 'Price':
-                price = field.value.replace('<:fenix_money:867086679810506792>', '')
+                price = cls.coin_regex.sub('', field.value) 
+                price = price.replace(',', '')
                 return int(price)
+        raise ValueError('Embed fields is empty')
 
     async def get(self, channel: discord.TextChannel, content: str) -> discord.Message:
         await channel.send(content)
-        await asyncio.sleep(10)
+        while not channel.last_message.embeds:
+            await asyncio.sleep(1)
         return channel.last_message
 
 
