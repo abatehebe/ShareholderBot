@@ -29,7 +29,7 @@ class MyClient(discord.Client):
         settings = ''.join(open('settings.json', 'r').readlines())
         settings = json.loads(settings)
 
-        seconds = self._get_seconds_to_changetime(settings.pop('changehours'))
+        seconds = self._get_seconds_to_changetime(settings.pop('changetimes'))
         print(seconds)
         
         if self.timer:
@@ -38,33 +38,38 @@ class MyClient(discord.Client):
         self.timer = threading.Timer(seconds, self.change_shareholders, settings.values())
         self.timer.start()
     
-    def _get_seconds_to_changetime(self, hours: Iterable[int]) -> int:
+    def _get_seconds_to_changetime(self, times: Iterable[Iterable[int]]) -> int:
         now = datetime.now(offset)
-        hour = self._get_nearest_hour(now, hours)
-        print(hour)
+        print(now)
+        times = tuple(time(*parameters) for parameters in times)
+        time_ = self._get_nearest_time(now, times)
+        print(time_)
 
         changetime = datetime(
                 year=now.year,
                 month=now.month,
                 day=now.day,
-                hour=hour,
+                hour=time_.hour,
+                minute=time_.minute,
+                second=time_.second,
+                microsecond=time_.microsecond,
                 tzinfo=offset
         )
 
-        if now.time() > time(hour=hour):
+        if now.time() > time_:
             changetime += timedelta(days=1)
 
         return (changetime-now).seconds
 
-    def _get_nearest_hour(self, now: datetime, hours: Iterable[int]) -> int:
-        if now.time() > time(hour=max(hours)):
-            return min(hours)
+    def _get_nearest_time(self, now: datetime, times: Iterable[time]) -> time:
+        now = now+timedelta(minutes=1)
+        if now.time() > max(times):
+            return min(times)
         else:
-            for hour in hours:
-                if now.time() < time(hour=hour):
-                    print(now.time())
-                    return hour
-        raise ValueError('hours must not be empty')
+            for time in times:
+                if now.time() < time:
+                    return time
+        raise ValueError('times must not be empty')
         
     def change_shareholders(self, server_id: int, channel_id: int):
         guild = self.get_guild(server_id)
