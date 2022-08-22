@@ -118,6 +118,7 @@ class MyClient(discord.Client):
     coin_regex = re.compile(r'<.+>')
     async def _get_price_shareholder(self, info: Embed) -> int:
         cls = self.__class__
+        print(info)
 
         for field in info.fields:
             if field.name == 'Price':
